@@ -16,41 +16,32 @@
         var doRotating =false;
             init();
             window.addEventListener('click', onClick);
+
             animate();
 
             function init() {
 
                 scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-                camera.position.z = 500;
-                camera.position.y = 800;
-                camera.lookAt(new THREE.Vector3(0, 80, 100));
-                scene.add(camera);
+                addCamera();
 
-                 drawPlane();
+                drawPlane();
+                drawTitle();
 
-                //box test for animation
-                 var loader = new THREE.TextureLoader();
-                 //var plane = new THREE.Mesh(planeGeo,
-                 //    new THREE.MeshBasicMaterial({
-                 //        color: meshColor,
-                 //        //  map: loader.load('image/basinleft.png'),
-                 //        wireframe: true
-                 //    }));
-
-                var geometry = new THREE.BoxGeometry(50, 20, 20);
-                //var material = new THREE.MeshNormalMaterial({ map: loader.load('image/basinleft.png')});
-                //var material = new THREE.MeshBasicMaterial({ map: loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg') });
-                var material = new THREE.MeshBasicMaterial({ map: loader.load('/image/AidenbgWithName.jpg') });
-                mesh = new THREE.Mesh(geometry, material);
-                mesh.position.y = 200;
-                scene.add(mesh);
+                console.log('BEFORE render');
 
                 renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(renderer.domElement);
 
-               
+                console.log('render END');
+            }
+
+            function addCamera() {
+                camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+                camera.position.z = 500;
+                camera.position.y = 800;
+                camera.lookAt(new THREE.Vector3(0, 80, 100));
+                scene.add(camera);
             }
 
             function drawPlane() {
@@ -105,32 +96,22 @@
                         if ((y + 10) % 70 === 0) { z = 193; }
                         if ((y + 10) % 110 === 0) { z = 190; }
                         if ((y + 10) % 170 === 0) { z = 195; }
-                        if ((y) % 100 === 10 && x > -460) { x = x + 10; position.setX(i, x); }
-                        if ((y) % 100 === 20 && x > -460) { x = x + 9; position.setX(i, x); }
-                        if ((y) % 100 === 30 && x > -460) { x = x + 7; position.setX(i, x); }
-                        if ((y) % 100 === 40 && x > -460) { x = x + 5; position.setX(i, x); }
-                        if ((y) % 100 === 50 && x > -460) { x = x + 3; position.setX(i, x); }
-                        if ((y) % 100 === 60 && x > -460) { x = x + 1; position.setX(i, x); }
-                        if ((y) % 100 === 70 && x > -460) { x = x + 3; position.setX(i, x); }
-                        if ((y) % 100 === 80 && x > -460) { x = x + 5; position.setX(i, x); }
-                        if ((y) % 100 === 90 && x > -460) { x = x + 7; position.setX(i, x); }
-                        if ((y) % 100 === 00 && x > -460) { x = x + 9; position.setX(i, x); }
                     }
                     // shallow ocean
                     if (x > -440 && x <= -360) {
                         z = 190; 
                         if ((y + 20) % 280 === 0 && x >= -390) { z = 180; }
                    
-                        if ((y) % 100 === 10 && x> -380) { x = x + 10; position.setX(i, x); }
-                        if ((y) % 100 === 20 && x > -380) { x = x + 9; position.setX(i, x); }
-                        if ((y) % 100 === 30 && x > -380) { x = x + 7; position.setX(i, x); }
-                        if ((y) % 100 === 40 && x > -380) { x = x + 5; position.setX(i, x); }
-                        if ((y) % 100 === 50 && x > -380) { x = x + 3; position.setX(i, x); }
-                        if ((y) % 100 === 60 && x > -380) { x = x + 1; position.setX(i, x); }
-                        if ((y) % 100 === 70 && x > -380) { x = x + 3; position.setX(i, x); }
-                        if ((y) % 100 === 80 && x > -380) { x = x + 5; position.setX(i, x); }
-                        if ((y) % 100 === 90 && x > -380) { x = x + 7; position.setX(i, x); }
-                        if ((y) % 100 === 00 && x > -380) { x = x + 9; position.setX(i, x); }
+                        if ((y) % 100 === 10 && x> -380) { x = x + 9;  }
+                        if ((y) % 100 === 20 && x > -380) { x = x + 8; }
+                        if ((y) % 100 === 30 && x > -380) { x = x + 7; }
+                        if ((y) % 100 === 40 && x > -380) { x = x + 5;}
+                        if ((y) % 100 === 50 && x > -380) { x = x + 3;}
+                        if ((y) % 100 === 60 && x > -380) { x = x + 1;}
+                        if ((y) % 100 === 70 && x > -380) { x = x + 3;}
+                        if ((y) % 100 === 80 && x > -380) { x = x + 5;}
+                        if ((y) % 100 === 90 && x > -380) { x = x + 7;}
+                        if ((y) % 100 === 00 && x > -380) { x = x + 9;}
                     }
 
                     // step1
@@ -168,32 +149,29 @@
                     if (x >= -50 && x < -20) { z = 75; }
                     if (x >= -20 && x < -10) { z = 50; }
                     if (x >= -10 && x < 10) { z = 80; }
-                    if (x >= 10 && x < 40) { z = 20; }  // deepset
+                    if (x >= 10 && x < 40) { z = 0; }  // deepset
                     if (x >= 40 && x < 60) { z = 80; }
                     if (x >= 60 && x < 80) { z = 50; }
                     if (x >= 80 && x < 100) { z = 75; }
                     if (x >= 100 && x < 120) { z = 55; }
                     if (x >= 120 && x < 140) { z = 60; }
                     
-                    
                     // trench 
                     if (x > 260 && x <= 280) { z = 50; }
                     if (x > 280 && x <= 300) { z = 30; }
                     if (x > 300 && x <= 320) { z = 10; }
-                    if (x > 320 && x <= 340) { z = 0; }
-                    if (x > 340 && x <= 360) { z = -30; }
+                    if (x > 320 && x <= 340) { z = -10; }
+                    if (x > 340 && x <= 360) { z = -50; }
                     
                     // right step1
                     if (x > 400 && x <= 460) {
                         z = 130;
-                        if ((y+90) % 290 === 0) { z = 110; }
+                        if ((y + 90) % 290 === 0 && x < 450) { z = 120; }
                     }
-                    // right shallow ocean
+                    // right mountain
                     if (x > 460 && x <= 480) {
                         z = 190;
-                        if ((y + 20) % 280 === 0 && x >= -390) { z = 180; }
-
-                        if ((y) % 100 === 10 && x > 470) { x = x + 10; position.setX(i, x); }
+                        if ((y) % 100 === 10 && x > 470) { x = x + 7; position.setX(i, x); }
                         if ((y) % 100 === 20 && x > 470) { x = x + 9; position.setX(i, x); }
                         if ((y) % 100 === 30 && x > 470) { x = x + 7; position.setX(i, x); }
                         if ((y) % 100 === 40 && x > 470) { x = x + 5; position.setX(i, x); }
@@ -203,6 +181,17 @@
                         if ((y) % 100 === 80 && x > 470) { x = x + 5; position.setX(i, x); }
                         if ((y) % 100 === 90 && x > 470) { x = x + 7; position.setX(i, x); }
                         if ((y) % 100 === 00 && x > 470) { x = x + 9; position.setX(i, x); }
+
+                        if (y  <= 10 && x > 470) { x = x + 7; position.setX(i, x); }
+                        if (y >10 && y <= 20 && x > 470) { x = x + 9; position.setX(i, x); }
+                        if (y > 20 && y <= 30 && x > 470) { x = x + 7; position.setX(i, x); }
+                        if (y > 30 && y <= 40 && x > 470) { x = x + 5; position.setX(i, x); }
+                        if (y > 40 && y <= 50 && x > 470) { x = x + 3; position.setX(i, x); }
+                        if (y > 50 && y <= 60 && x > 470) { x = x + 1; position.setX(i, x); }
+                        if (y > 60 && y <= 70 && x > 470) { x = x + 3; position.setX(i, x); }
+                        if (y > 70 && y <= 80 && x > 470) { x = x + 5; position.setX(i, x); }
+                        if (y > 80 && y <= 90 && x > 470) { x = x + 7; position.setX(i, x); }
+                        
                     }
                     // right beach
                     if (x > 480 && x <= 500) {
@@ -210,9 +199,14 @@
                         if ((y + 10) % 30 === 0) { z = 195; }
                         if ((y + 10) % 50 === 0) { z = 200; }
                         if ((y + 10) % 70 === 0) { z = 210; }
-
                     }
-                   
+
+                    // add random noise to X,Y and Z
+                    z = z + getRandomIntInclusive(-1, 1);
+                    y = y + getRandomIntInclusive(-2, 2);
+                    x = x + getRandomIntInclusive(-2, 2);
+                    position.setX(i, x);
+                    position.setY(i, y);
                     position.setZ(i, z);
                     position.needsUpdate = true;
 
@@ -220,34 +214,62 @@
                 }
                 console.log(position.count); //2601
 
-                // load a resource
+                // load a texture
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred9.jpg' ;
                 var loader = new THREE.TextureLoader();
                 var plane = new THREE.Mesh(planeGeo,
                     new THREE.MeshBasicMaterial({
-                        color: meshColor,
-                      //  map: loader.load('image/basinleft.png'),
-                        wireframe: true
+                        map: loader.load(url1) ,
+                        //color: meshColor,
+                        wireframe: true,
+                        opacity: 0.5,
+                        transparent: true
                     }));
                 plane.rotation.x -= Math.PI * .5;
                 scene.add(plane);
 
+                console.log('load Plane End'); 
 
             }
-        
+            function getRandomIntInclusive(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+            }
+
+            function drawTitle() {
+                console.log('drawTitle');
+                var geometry = new THREE.BoxGeometry(120, 50, 50);
+                var textureLoader = new THREE.TextureLoader();
+               // var url1 = 'https://threejsfundamentals.org/threejs/resources/images/wall.jpg';
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/right.jpg';
+                var url2 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Left.jpg';
+                var url3 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Title1.jpg';
+                var url4 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Title2.jpg';
+                var url5 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Title3.jpg';
+                var url6 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/JS180.jpg';
+                var materials = [
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url1) }),
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url2) }),
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url3) }),
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url4) }),
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url5) }),
+                    new THREE.MeshBasicMaterial({ map: textureLoader.load(url6) })
+                ];
+                
+                mesh = new THREE.Mesh(geometry, materials);
+                mesh.position.y = 400;
+
+                scene.add(mesh);
+                console.log('drawTitle END');
+            }
+
 
             function drawWave() {
                 
             }
 
-            function drawPlate() {
-                var geometry = new THREE.BoxGeometry(400, 200, 10);
-                var material = new THREE.MeshNormalMaterial();
-                var plate = new THREE.Mesh(geometry, material);
-                plate.rotation.x = -1;
-                plate.rotation.y = 0.2;
-                plate.rotation.z = 0.5;
-                scene.add(plate);
-            }
+         
             function drawCone() {
                 {
                     var geometry = new THREE.ConeGeometry(12, 30, 20);
@@ -280,8 +302,8 @@
 
             function render() {
                     if (doRotating ){
-                                    mesh.rotation.x += 0.01;
-                                    mesh.rotation.y += 0.02;
+                                    mesh.rotation.x += 0.005;
+                                  //  mesh.rotation.y += 0.02;
                     }
                 renderer.render(scene, camera);
             }
