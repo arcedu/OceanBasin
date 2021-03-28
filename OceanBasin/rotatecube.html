@@ -12,12 +12,15 @@
 
         <script>
 
-            var _camera, _scene, _renderer, _titlebox, _planeGeo, _waveplaneGeo;
-                WAVEHEIGHT = 180, _animationCount = 0;
-            var doAnimating = false;
+            var _camera, _scene, _renderer, _titlebox, _planeGeo, _waveplaneGeo, _cameraAddZ, _animationCount = 0;_timeCount=0, _SpeedZ=0.7;
+            WAVEHEIGHT = 180, LOOKATX = 0, LOOKATY = 80, LOOKATZ = 100, KEYUPCODE = 117, KEYDOWNCODE = 100, KEYLEFTCODE = 108, KEYRIGHTCODE = 114;
+            var doAnimating = false, _cameraAddZ = true;
+                _cameraAddZ
+
             init();
             window.addEventListener('click', onClick);
-
+            window.addEventListener('keypress', onKeypress);
+            
             animate();
 
             function init() {
@@ -26,9 +29,9 @@
 
                 drawPlane();
                 drawTitle();
-              //  drawWave();
-              //  drawFrontLegend();
-                drawBackLegend();
+                drawWave();
+                  drawFrontLegend();
+                  drawBackLegend();
                 _renderer = new THREE.WebGLRenderer();
                 _renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(_renderer.domElement);
@@ -37,9 +40,9 @@
 
             function addCamera() {
                 _camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-                _camera.position.z =- 800;
+                _camera.position.z = 800;
                 _camera.position.y = 200;
-                _camera.lookAt(new THREE.Vector3(0, 80, 100));
+                _camera.lookAt(new THREE.Vector3(LOOKATX, LOOKATY, LOOKATZ));
                 _scene.add(_camera);
             }
 
@@ -257,9 +260,9 @@
 
             function drawWave() {
                 var depth = 30;
-                var planeSize = 1000;
+                var planeSize = 980;
                    
-                _waveplaneGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize / 2 + 20, depth, depth);
+                _waveplaneGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize / 2 + 10, depth, depth);
                 var position = _waveplaneGeo.attributes.position;
                 var vector = new THREE.Vector3();
                 console.log(position.count ); //2601
@@ -275,15 +278,16 @@
             
                 var waveplane = new THREE.Mesh(_waveplaneGeo,
                     new THREE.MeshBasicMaterial({
-                        color: "#0055ff",
+                        color: "#2255ff",
                         wireframe: true,
-                        opacity: 0.002,
+                        opacity: 0.002
                     }));
                
                 waveplane.rotation.x -= Math.PI * .5;
                 _scene.add(waveplane);  
                 
             }
+
             function drawFrontLegend() {
                
                 var legendplaneGeo = new THREE.PlaneBufferGeometry(1000, 200, 50, 4);
@@ -365,7 +369,9 @@
                 legendPosition.setY(204, -100);
 
                 // megma
-               legendPosition.setY(179, 0);
+                legendPosition.setY(179, 0);
+                legendPosition.setY(128, 0);
+                legendPosition.setY(77, 0);
                 legendPosition.needsUpdate = true;
                 
                 _scene.add(legendplane);  
@@ -377,12 +383,12 @@
                 var legendPosition = backLegendplaneGeo.attributes.position;
 
                 var vector = new THREE.Vector3();
-                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Legendback5.jpg';
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Legendback6.jpg';
                 var loader = new THREE.TextureLoader();
                 var backLegendplane = new THREE.Mesh(backLegendplaneGeo,
                     new THREE.MeshBasicMaterial({
                         map: loader.load(url1),
-                        //color: "#aaaaaa",
+                        color: "#aaaaaa",
                         wireframe: false,
                         opacity: 0.5
                     }));
@@ -390,25 +396,22 @@
                 
                 for (let i = 0, l = legendPosition.count; i < l; i++) {
                     legendPosition.setZ(i, 248);
-                    var y = legendPosition.getY(i);
-                    legendPosition.setY(i, y + 100);
+                   
+                    legendPosition.setY(i, legendPosition.getY(i) + 100);
                     vector.fromBufferAttribute(legendPosition, i);
                 }
                 // top layer nodes copy from plane's topmost layer
                 var positionFloor = _planeGeo.attributes.position;
                 var legendi =49;
                 for (let i = 1, l =  52; i < l; i++) {
-
-                    y = positionFloor.getZ(i);
-
-                    legendPosition.setY(legendi, y);
+                    legendPosition.setY(legendi, positionFloor.getZ(i));
                     vector.fromBufferAttribute(legendPosition, i);
                     legendi--;
                 }
-                //306
+                
                 for (let j = 1, l = 5; j < l; j++) {
                     for (let i = 1, l = 51; i < l; i++) {
-                        y = legendPosition.getY(i) + 100;
+                        var y = legendPosition.getY(i) + 100;
                         legendPosition.setY(i + 51 * j, y * (4 - j) / 4 - 100);
                         vector.fromBufferAttribute(legendPosition, i + 51 * j);
                     }
@@ -416,46 +419,47 @@
 
                 // left continential nodes, make sand layer thicker
                 for (let i = 51, l = 56; i < l; i++) {
-
-                    legendPosition.setY(i, 30);
+                    legendPosition.setY(i, 42- (i-51) * 3);
+                }
+                for (let i = 103, l = 108; i < l; i++) {
+                    legendPosition.setY(i, 19 - (i - 103) * 2);
                 }
 
-                for (let i = 102, l = 107; i < l; i++) {
-
-                    legendPosition.setY(i, -10);
+                // right continential nodes, make sand layer thicker
+                for (let i = 94, l = 102; i < l; i++) {
+                    legendPosition.setY(i, 30+(i-90)*2);
+                }
+                for (let i = 143, l = 153; i < l; i++) {
+                    legendPosition.setY(i, -10 + (i - 142) * 2);
                 }
 
-                for (let i = 153, l = 160; i < l; i++) {
-
+                for (let i = 193, l = 200; i < l; i++) {
                     legendPosition.setY(i, -50);
                 }
-
-                //// right continential nodes, make sand layer thicker
-                //legendPosition.setY(97, 30);
-                //legendPosition.setY(98, 32);
-                //legendPosition.setY(99, 34);
-                //legendPosition.setY(100, 36);
-                //legendPosition.setY(101, 42);
-
-                //legendPosition.setY(148, 10);
-                //legendPosition.setY(149, 12);
-                //legendPosition.setY(150, 14);
-                //legendPosition.setY(151, 16);
-                //legendPosition.setY(152, 19);
-                //for (let i = 199, l = 204; i < l; i++) {
-
-                //    legendPosition.setY(i, -30);
-                //}
-
+               
 
                 // corer nodes
-                legendPosition.setY(0, 255);
+                legendPosition.setY(0, 270);
                 legendPosition.setY(204, -100);
-
+                legendPosition.setY(50, 230);
+                legendPosition.setY(51, 60);
+                legendPosition.setY(102, 20);
+                legendPosition.setY(153, -20);
 
                 // megma
+                legendPosition.setY(177, 0);
+                legendPosition.setY(126, 0);
+                legendPosition.setY(75, 0);
 
-                legendPosition.setY(179, 0);
+                legendPosition.setY(86, 40);
+                legendPosition.setY(87, 50);
+                legendPosition.setY(88, 40);
+                legendPosition.setY(137, 20);
+                legendPosition.setY(138, 30);
+                legendPosition.setY(139, 20);
+                legendPosition.setY(188, -10);
+                legendPosition.setY(189, 0);
+                legendPosition.setY(190, -10);
                 legendPosition.needsUpdate = true;
 
                 _scene.add(backLegendplane);
@@ -476,23 +480,65 @@
                     _animationCount += 0.1;
                 }
             }
-       
+
+            function AnimatingCamera() {
+                
+                if (_camera.position.z > 900 )_cameraAddZ =false;
+                if (_camera.position.z < -900) _cameraAddZ = true;
+                if (_cameraAddZ) { _camera.position.z += _SpeedZ }
+                else {
+                    _camera.position.z -= _SpeedZ;
+                };
+                if (_timeCount > 900 && _timeCount < 1600) {
+                    _SpeedZ = 2;
+                } else {
+                    _SpeedZ = 0.7;
+                }
+                if (_timeCount > 100 && _timeCount < 800) updateCameraByKeyCode(KEYUPCODE, _SpeedZ);
+                if (_timeCount > 200 && _timeCount < 1000) updateCameraByKeyCode(KEYRIGHTCODE, _SpeedZ);
+                if (_timeCount > 1500 && _timeCount < 1700) updateCameraByKeyCode(KEYUPCODE, _SpeedZ);
+                if (_timeCount > 1600 && _timeCount < 2200) updateCameraByKeyCode(KEYDOWNCODE, _SpeedZ);
+                if (_timeCount > 1400 && _timeCount < 2500) updateCameraByKeyCode(KEYLEFTCODE, _SpeedZ);
+                if (_timeCount > 3000) _timeCount = 0;
+                _timeCount++;
+                _camera.lookAt(new THREE.Vector3(LOOKATX, LOOKATY, LOOKATZ));
+            }
+
             function animate() {
                 requestAnimationFrame(animate);
                 render();
             }
 
             function render() {
-                
                     if (doAnimating ){
                         _titlebox.rotation.x += 0.005;// rotate titlebox
-                       // AnimatingWave();        // wave     
+                         AnimatingWave();        // wave     
+                         AnimatingCamera();        // camera alway move alone Z
+                }
+                _renderer.render(_scene, _camera);
+            }
+            function updateCameraByKeyCode(keyCode, speed) {
+                    if (keyCode === 114) { //right
+                        _camera.position.x += speed;
+                    }
+                    if (keyCode === 108) { //left
+                        _camera.position.x -= speed;
+                    }
+                    if (keyCode === 117) { //up
+                        _camera.position.y += speed;
+                    }
+                    if (keyCode === 100) { //down
+                        _camera.position.y -= speed * 2;
+                    }
                 }
 
-                _renderer.render(_scene, _camera);
+            function onKeypress(event) {
+                updateCameraByKeyCode(event.keyCode, _SpeedZ * 10);
+                return;
             }
 
             function onClick(event) {
+                console.log('onClick  ');
                 event.preventDefault();
                 doAnimating = !doAnimating;
             }
