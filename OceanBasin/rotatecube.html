@@ -12,58 +12,47 @@
 
         <script>
 
-            var camera, scene, renderer, plate, cone, cylinder, material, mesh;
-        var doRotating =false;
+            var _camera, _scene, _renderer, _titlebox, _planeGeo, _waveplaneGeo;
+                WAVEHEIGHT = 180, _animationCount = 0;
+            var doAnimating = false;
             init();
             window.addEventListener('click', onClick);
 
             animate();
 
             function init() {
-
-                scene = new THREE.Scene();
+                _scene = new THREE.Scene();
                 addCamera();
 
                 drawPlane();
                 drawTitle();
+                drawWave();
+                drawLegend();
+              
+                _renderer = new THREE.WebGLRenderer();
+                _renderer.setSize(window.innerWidth, window.innerHeight);
+                document.body.appendChild(_renderer.domElement);
 
-                console.log('BEFORE render');
-
-                renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-
-                console.log('render END');
             }
 
             function addCamera() {
-                camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-                camera.position.z = 500;
-                camera.position.y = 800;
-                camera.lookAt(new THREE.Vector3(0, 80, 100));
-                scene.add(camera);
+                _camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+                _camera.position.z =800;
+                _camera.position.y = 200;
+                _camera.lookAt(new THREE.Vector3(0, 80, 100));
+                _scene.add(_camera);
             }
 
             function drawPlane() {
-                //var geometry = new THREE.PlaneGeometry( 5, 20, 32 );
-                //var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-                //var plane = new THREE.Mesh( geometry, material );
-                //scene.add( plane );
+         
                 var depth = 50;
-                var vertexHeight = 200,
-                       planeDefinition = depth,
-                       planeSize = 1000,
-                       totalObjects = 1,
-                       background = "#002135",
-                       meshColor = "#005e55";
-                var planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize / 2, planeDefinition, planeDefinition);
-                //planeGeo.vertices[1].y = 10;
-                //                plane.geometry.verticesNeedUpdate = true;
-
-
-                var position = planeGeo.attributes.position;
+                var planeDefinition = depth,
+                    planeSize = 1000;
+                     
+                _planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize / 2, planeDefinition, planeDefinition);
+                var position = _planeGeo.attributes.position;
                 var vector = new THREE.Vector3();
-
+              
                 for (let i = 0, l = position.count; i < l; i++) {
                     var z = 60;
                     var x = position.getX(i);
@@ -113,21 +102,16 @@
                         if ((y) % 100 === 90 && x > -380) { x = x + 7;}
                         if ((y) % 100 === 00 && x > -380) { x = x + 9;}
                     }
-
-                    // step1
-                    if (x > -360 && x <= -320) {
-                        z = 130;
-                        if ((y+20) % 280 === 0) { z = 110; }
-                    }
+                  
                     // island
                     if (x >= -240 && y >= 150 &&
                         x <= -180 && y <= 210) { z = 90; }
                     if (x >= -230 && y >= 160 &&
                         x <= -190 && y <= 200) { z = 140; }
                     if (x >= -220 && y >= 170 &&
-                        x <= -200 && y <= 190) { z = 180; }
+                        x <= -200 && y <= 190) { z = 195; }
                     if (x >= -210 && y >= 180 &&
-                          x <= -200 && y <= 190) { z = 200; }
+                          x <= -200 && y <= 190) { z = 220; }
 
                     // under water volcano 
                     if (x >= -190 && y >= 50 &&
@@ -165,7 +149,7 @@
                     
                     // right step1
                     if (x > 400 && x <= 460) {
-                        z = 130;
+                        z = 190;
                         if ((y + 90) % 290 === 0 && x < 450) { z = 120; }
                     }
                     // right mountain
@@ -194,20 +178,29 @@
                         
                     }
                     // right beach
-                    if (x > 480 && x <= 500) {
-                        z = 200;
-                        if ((y + 10) % 30 === 0) { z = 195; }
-                        if ((y + 10) % 50 === 0) { z = 200; }
-                        if ((y + 10) % 70 === 0) { z = 210; }
+                    if (x > 480 && x <= 490) {
+                        z = 250;
+                        if ((y + 10) % 30 === 0) { z = 245; }
+                        if ((y + 10) % 50 === 0) { z = 235; }
+                        if ((y + 10) % 70 === 0) { z = 260; }
+                    }
+                    if (x > 490 && x <= 500) {
+                        z = 270;
+                        if ((y + 10) % 30 === 0) { z = 265; }
+                        if ((y + 10) % 50 === 0) { z = 275; }
+                        if ((y + 10) % 70 === 0) { z = 280; }
                     }
 
                     // add random noise to X,Y and Z
-                    z = z + getRandomIntInclusive(-1, 1);
-                    y = y + getRandomIntInclusive(-2, 2);
-                    x = x + getRandomIntInclusive(-2, 2);
-                    position.setX(i, x);
-                    position.setY(i, y);
-                    position.setZ(i, z);
+                    if (i < 2550) {
+                        z = z + getRandomIntInclusive(-1, 1);
+                        y = y + getRandomIntInclusive(-2, 2);
+                        x = x + getRandomIntInclusive(-2, 2);
+                    }
+                        position.setX(i, x);
+                        position.setY(i, y);
+                        position.setZ(i, z);
+                    
                     position.needsUpdate = true;
 
                     vector.fromBufferAttribute(position, i);
@@ -215,20 +208,18 @@
                 console.log(position.count); //2601
 
                 // load a texture
-                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred9.jpg' ;
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred11.jpg' ;
                 var loader = new THREE.TextureLoader();
-                var plane = new THREE.Mesh(planeGeo,
+                var plane = new THREE.Mesh(_planeGeo,
                     new THREE.MeshBasicMaterial({
                         map: loader.load(url1) ,
                         //color: meshColor,
                         wireframe: true,
-                        opacity: 0.5,
+                        opacity: 0.9,
                         transparent: true
                     }));
                 plane.rotation.x -= Math.PI * .5;
-                scene.add(plane);
-
-                console.log('load Plane End'); 
+                _scene.add(plane);
 
             }
             function getRandomIntInclusive(min, max) {
@@ -241,7 +232,7 @@
                 console.log('drawTitle');
                 var geometry = new THREE.BoxGeometry(120, 50, 50);
                 var textureLoader = new THREE.TextureLoader();
-               // var url1 = 'https://threejsfundamentals.org/threejs/resources/images/wall.jpg';
+             
                 var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/right.jpg';
                 var url2 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Left.jpg';
                 var url3 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Title1.jpg';
@@ -257,18 +248,131 @@
                     new THREE.MeshBasicMaterial({ map: textureLoader.load(url6) })
                 ];
                 
-                mesh = new THREE.Mesh(geometry, materials);
-                mesh.position.y = 400;
+                _titlebox = new THREE.Mesh(geometry, materials);
+                _titlebox.position.y = 400;
 
-                scene.add(mesh);
-                console.log('drawTitle END');
+                _scene.add(_titlebox);
             }
 
 
             function drawWave() {
+                var depth = 30;
+                var planeSize = 1000;
+                   
+                _waveplaneGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize / 2 + 20, depth, depth);
+                var position = _waveplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+                console.log(position.count ); //2601
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var newZ = Math.sin(i) * (20) + WAVEHEIGHT;
+                    position.setZ(i, newZ);
+                    var y = position.getY(i);
+                    position.setY(i,y+10);
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+
+                }
+            
+                var waveplane = new THREE.Mesh(_waveplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        color: "#0055ff",
+                        wireframe: true,
+                        opacity: 0.002,
+                    }));
+               
+                waveplane.rotation.x -= Math.PI * .5;
+                _scene.add(waveplane);  
                 
             }
+            function drawLegend() {
+               
+                var legendplaneGeo = new THREE.PlaneBufferGeometry(1000, 200, 50, 4);
+                var legendPosition = legendplaneGeo.attributes.position;
+              
+                var vector = new THREE.Vector3();
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Legend11.jpg';
+                var loader = new THREE.TextureLoader();
+                var legendplane = new THREE.Mesh(legendplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        map: loader.load(url1), 
+                        //color: "#ff55ff",
+                        wireframe: false,
+                        opacity: 0.2,
+                    }));
+               
+                for (let i = 0, l = legendPosition.count; i < l; i++) {
+                    legendPosition.setZ(i, +248);
+                    var y = legendPosition.getY(i);
+                    legendPosition.setY(i, y +100);
+                    vector.fromBufferAttribute(legendPosition, i);
+                }
+                 // top layer nodes copy from plane's topmost layer
+                var positionFloor = _planeGeo.attributes.position;
+                var legendi = 51;
+                for (let i = positionFloor.count, l = positionFloor.count-51; i >= l; i--) {
 
+                    y= positionFloor.getZ(i);
+         
+                    legendPosition.setY(legendi, y);
+                    vector.fromBufferAttribute(legendPosition, i);
+                    legendi--;
+                }
+                //306
+                for (let j = 1, l = 5; j < l; j++) {
+                    for (let i = 1, l = 51; i < l; i++) {
+                        y = legendPosition.getY(i) + 100;
+                        legendPosition.setY(i + 51 * j, y * (4 - j) / 4 - 100);
+                        vector.fromBufferAttribute(legendPosition, i + 51 * j);
+                    }
+                }
+
+                // left continential nodes, make sand layer thicker
+                legendPosition.setY(0, 250);
+                for (let i = 51, l = 61; i < l; i++) {
+                  
+                    legendPosition.setY(i, 30);
+                }
+
+                for (let i = 102, l = 111; i < l; i++) {
+
+                    legendPosition.setY(i, -10);
+                }
+
+                for (let i = 153, l = 163; i < l; i++) {
+
+                    legendPosition.setY(i, -50);
+                }
+
+                // right continential nodes, make sand layer thicker
+                legendPosition.setY(97, 30);
+                legendPosition.setY(98, 32);
+                legendPosition.setY(99, 34);
+                legendPosition.setY(100, 36);
+                legendPosition.setY(101, 42);
+
+                legendPosition.setY(148, 10);
+                legendPosition.setY(149, 12);
+                legendPosition.setY(150, 14);
+                legendPosition.setY(151, 16);
+                legendPosition.setY(152, 19);
+                for (let i = 199, l = 204; i < l; i++) {
+
+                    legendPosition.setY(i, -30);
+                }
+              
+
+                // corer nodes
+                legendPosition.setY(0, 250);
+                legendPosition.setY(204, -100);
+              
+
+                  // megma
+               
+                legendPosition.setY(179, 0);
+                legendPosition.needsUpdate = true;
+                
+                _scene.add(legendplane);  
+            }
          
             function drawCone() {
                 {
@@ -281,7 +385,7 @@
                     cone.rotation.x = 0.6;
                     cone.rotation.y = 0;
                     cone.rotation.z = 0;
-                    scene.add(cone);
+                    _scene.add(cone);
 
                     cone = new THREE.Mesh(geometry, material);
                     cone.position.y = 15;
@@ -290,10 +394,24 @@
                     cone.rotation.x = 0.6;
                     cone.rotation.y = 0;
                     cone.rotation.z = 0;
-                    scene.add(cone);
+                    _scene.add(cone);
                 }
             }
 
+            function AnimatingWave() {
+                var position = _waveplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                for (let i = 0, l = position.count; i < l; i++) {
+
+                    var newZ = Math.sin((i + _animationCount * 0.0002)) *
+                        (20) + WAVEHEIGHT;
+                    position.setZ(i, newZ);
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                    _animationCount += 0.1;
+                }
+            }
        
             function animate() {
                 requestAnimationFrame(animate);
@@ -301,19 +419,19 @@
             }
 
             function render() {
-                    if (doRotating ){
-                                    mesh.rotation.x += 0.005;
-                                  //  mesh.rotation.y += 0.02;
-                    }
-                renderer.render(scene, camera);
+                
+                    if (doAnimating ){
+                        _titlebox.rotation.x += 0.005;// rotate titlebox
+                        AnimatingWave();        // wave     
+                }
+
+                _renderer.render(_scene, _camera);
             }
 
             function onClick(event) {
                 event.preventDefault();
-                doRotating = !doRotating;
+                doAnimating = !doAnimating;
             }
-
         </script>
     </body>
-
 </html>
