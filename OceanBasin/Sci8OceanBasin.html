@@ -26,7 +26,11 @@
             function init() {
                 _scene = new THREE.Scene();
                 addCamera();
-
+                drawLabelRidge();
+                drawLabelShelf();
+                drawLabelPlain();
+                drawLabelTrench();
+                drawLabelSlope();
                 drawPlane();
                 drawTitle();
                 drawWave();
@@ -40,7 +44,7 @@
 
             function addCamera() {
                 _camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-                _camera.position.z = 800;
+                _camera.position.z =800;
                 _camera.position.y = 200;
                 _camera.lookAt(new THREE.Vector3(LOOKATX, LOOKATY, LOOKATZ));
                 _scene.add(_camera);
@@ -465,6 +469,161 @@
                 _scene.add(backLegendplane);
             }
           
+            function drawLabelRidge() {
+                var depth = 50;
+                var planeDefinition = depth,
+                    planeSize = 20;
+
+                var labelplaneGeo = new THREE.PlaneBufferGeometry(90, 20, 4, 4);
+                var position = labelplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Mideoceanridge2.png';
+                var loader = new THREE.TextureLoader();
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var y = position.getY(i);
+                    position.setY(i, y +10);
+                    var z = position.getZ(i);
+                    position.setZ(i, z + 250);
+                    var x = position.getX(i);
+                    position.setX(i, x + 20)
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                }
+                var plane = new THREE.Mesh(labelplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        wireframe: false,
+                        map: loader.load(url1), 
+                        opacity: 100,
+                        transparent: true
+                    }));
+                _scene.add(plane);
+
+            }
+            function drawLabelShelf() {
+                var depth = 50;
+                var planeDefinition = depth,
+                    planeSize = 20;
+
+                var labelplaneGeo = new THREE.PlaneBufferGeometry(90, 20, 4, 4);
+                var position = labelplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Continentalshelf.png';
+                var loader = new THREE.TextureLoader();
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var y = position.getY(i);
+                    position.setY(i, y + 180);
+                    var z = position.getZ(i);
+                    position.setZ(i, z + 250);
+                    var x = position.getX(i);
+                    position.setX(i, x - 410)
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                }
+                var plane = new THREE.Mesh(labelplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        wireframe: false,
+                        map: loader.load(url1),
+                        opacity: 100,
+                        transparent: true
+                    }));
+                _scene.add(plane);
+
+            }
+            function drawLabelPlain() {
+                var depth = 50;
+                var planeDefinition = depth,
+                    planeSize = 20;
+
+                var labelplaneGeo = new THREE.PlaneBufferGeometry(90, 20, 4, 4);
+                var position = labelplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Abyssalplain.png';
+                var loader = new THREE.TextureLoader();
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var y = position.getY(i);
+                    position.setY(i, y + 40);
+                    var z = position.getZ(i);
+                    position.setZ(i, z + 250);
+                    var x = position.getX(i);
+                    position.setX(i, x - 210)
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                }
+                var plane = new THREE.Mesh(labelplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        wireframe: false,
+                        map: loader.load(url1),
+                        opacity: 100,
+                        transparent: true
+                    }));
+                _scene.add(plane);
+
+            }
+            function drawLabelTrench() {
+                var depth = 50;
+                var planeDefinition = depth,
+                    planeSize = 20;
+
+                var labelplaneGeo = new THREE.PlaneBufferGeometry(90, 20, 4, 4);
+                var position = labelplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Oceanictrench.png';
+                var loader = new THREE.TextureLoader();
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var y = position.getY(i);
+                    position.setY(i, y - 50);
+                    var z = position.getZ(i);
+                    position.setZ(i, z + 250);
+                    var x = position.getX(i);
+                    position.setX(i, x + 280)
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                }
+                var plane = new THREE.Mesh(labelplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        wireframe: false,
+                        map: loader.load(url1),
+                        opacity: 100,
+                        transparent: true
+                    }));
+                _scene.add(plane);
+
+            }
+            function drawLabelSlope() {
+                var depth = 50;
+                var planeDefinition = depth,
+                    planeSize = 20;
+
+                var labelplaneGeo = new THREE.PlaneBufferGeometry(90, 20, 4, 4);
+                var position = labelplaneGeo.attributes.position;
+                var vector = new THREE.Vector3();
+
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/Continentalslope.png';
+                var loader = new THREE.TextureLoader();
+                for (let i = 0, l = position.count; i < l; i++) {
+                    var y = position.getY(i);
+                    position.setY(i, y + 120);
+                    var z = position.getZ(i);
+                    position.setZ(i, z + 250);
+                    var x = position.getX(i);
+                    position.setX(i, x - 400)
+                    position.needsUpdate = true;
+                    vector.fromBufferAttribute(position, i);
+                }
+                var plane = new THREE.Mesh(labelplaneGeo,
+                    new THREE.MeshBasicMaterial({
+                        wireframe: false,
+                        map: loader.load(url1),
+                        opacity: 100,
+                        transparent: true
+                    }));
+                _scene.add(plane);
+
+            }
 
             function AnimatingWave() {
                 var position = _waveplaneGeo.attributes.position;
