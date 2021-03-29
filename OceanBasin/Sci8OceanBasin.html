@@ -2,12 +2,12 @@
 <html>
      <head>
 
-        <title>Rotating a Cube</title>
+        <title>Science 8 Ocean Basin</title>
 
     </head>
 
     <body>
-        drawPlane
+       
         <script src="js/three.js"></script>
 
         <script>
@@ -36,6 +36,7 @@
                 drawWave();
                   drawFrontLegend();
                   drawBackLegend();
+                addPointLight();
                 _renderer = new THREE.WebGLRenderer();
                 _renderer.setSize(window.innerWidth, window.innerHeight);
                 document.body.appendChild(_renderer.domElement);
@@ -48,6 +49,12 @@
                 _camera.position.y = 200;
                 _camera.lookAt(new THREE.Vector3(LOOKATX, LOOKATY, LOOKATZ));
                 _scene.add(_camera);
+            }
+
+            function addPointLight() {
+                var light = new THREE.PointLight(0xffffff, 100, 100);
+                light.position.set(-100, -100, 200);
+                _scene.add(light);
             }
 
             function drawPlane() {
@@ -215,14 +222,13 @@
                 console.log(position.count); //2601
 
                 // load a texture
-                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred11.jpg' ;
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred13.png' ;
                 var loader = new THREE.TextureLoader();
                 var plane = new THREE.Mesh(_planeGeo,
                     new THREE.MeshBasicMaterial({
                         map: loader.load(url1) ,
-                        //color: meshColor,
-                        wireframe: true,
-                        opacity: 0.9,
+                        wireframe: false,
+                        opacity: 0.8,
                         transparent: true
                     }));
                 plane.rotation.x -= Math.PI * .5;
@@ -283,8 +289,9 @@
                 var waveplane = new THREE.Mesh(_waveplaneGeo,
                     new THREE.MeshBasicMaterial({
                         color: "#2255ff",
-                        wireframe: true,
-                        opacity: 0.002
+                        wireframe: false,
+                        opacity: 0.3,
+                        transparent: true
                     }));
                
                 waveplane.rotation.x -= Math.PI * .5;
