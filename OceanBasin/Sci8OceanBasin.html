@@ -55,12 +55,12 @@
             function init() {
                 _scene = new THREE.Scene();
                 addCamera();
-                addLabel('Mid-Ocean Ridge', 0, 100, 220,0);
+                addLabel('Mid-Ocean\n   Ridge', -20, 100, 220, 0);
                 addLabel('Oceanic\nTrench', 290, 40, 250, 0);
                 addLabel('Abyssal Plain', -180, 80, 220, 0);
                 addLabel('Continental \n          Shelf', -460, 220, 250, 0);
                 addLabel('Continental \n Slope', -340, 120, 250, 1);
-                addLabel('Continental \n Slope', 380, 130, 100, -1);
+                addLabel('Continental \n Slope', 380, 130, 30, -1);
                 addLabel('Magma', 0, -80, 250, 0);
                 addLabel('Island', -230, 225, -170, 0);
                 addLabel('Underwater\nVolcano', -210, 150, -100, 0);
@@ -263,7 +263,7 @@
                 console.log(position.count); //2601
 
                 // load a texture
-                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred15.png' ;
+                var url1 = 'https://raw.githubusercontent.com/arcedu/OceanBasin/main/OceanBasin/image/oceanbasinred16.png' ;
                 var loader = new THREE.TextureLoader();
                 var plane = new THREE.Mesh(_planeGeo,
                     new THREE.MeshBasicMaterial({
